@@ -1,4 +1,6 @@
-const db = require('../connection')
+const db = require('../connection');
+const format = require('pg-format');
+const { formatUsers } = require('../../utils/format-seed')
 
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
@@ -20,7 +22,8 @@ const seed = (data) => {
     CREATE TABLE topics (
       slug VARCHAR(200) PRIMARY KEY,
       description VARCHAR
-    );`)})
+    );`)
+  })
     .then(() => {
       return db.query(`
       CREATE TABLE articles (
@@ -43,6 +46,17 @@ const seed = (data) => {
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       body VARCHAR NOT NULL
     );`)
+  })
+  .then(() => {
+     const formattedUserData = formatUsers(userData);
+    const sqlUser = format(
+      `INSERT INTO users (username, avatar_url, name)
+      VALUES %L
+      RETURNING *;`,
+      // userData.map(user => [user.username, user.avatar_url, user.name])
+      formattedUserData,
+    );
+    return db.query(sqlUser)
   })
 
 
