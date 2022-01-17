@@ -11,3 +11,17 @@ exports.formatTopics = (topicData) => {
     })
     return formattedTopicData
 }
+
+exports.formatArticles = (articleData) => {
+    const formattedArticleData = articleData.map(article => {
+        return [article.title, article.body, article.votes, article.topic, article.author, article.created_at]
+    })
+    return formattedArticleData
+}
+
+exports.formatComments = (commentData) => {
+    const formattedCommentData = commentData.map(comment => {
+        return [comment.author, comment.article_id, comment.votes, comment.created_at, comment.body]
+    })
+    return formattedCommentData
+}
