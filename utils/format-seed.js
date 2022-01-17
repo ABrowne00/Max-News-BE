@@ -4,3 +4,10 @@ exports.formatUsers = (userData) => {
     })
     return formattedUserData
 };
+
+exports.formatTopics = (topicData) => {
+    const formattedTopicData = topicData.map(topic => {
+        return [topic.slug, topic.description] 
+    })
+    return formattedTopicData
+}
