@@ -1,7 +1,8 @@
-const { fetchUsers } = require('../models/models')
+const { fetchUsers } = require('../models/users.models')
 
 exports.getUsers = (req, res, next ) => {
     fetchUsers().then((users) => {
+        console.log(users, '<<<controller')
         res.status(200).send({ users })
     })
 }

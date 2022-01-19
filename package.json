@@ -26,5 +26,14 @@
     "jest": "^27.4.7",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4"
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
+  },
+  "devDependencies": {
+    "jest-sorted": "^1.0.14",
+    "supertest": "^6.2.1"
   }
 }
