@@ -13,9 +13,9 @@ const seed = (data) => {
 .then(() => {
   return db.query(`
   CREATE TABLE users (
-    username VARCHAR(200) PRIMARY KEY,
+    username VARCHAR(25) PRIMARY KEY,
     avatar_url VARCHAR,
-    name VARCHAR(200) NOT NULL
+    name VARCHAR(25) NOT NULL
   );`)})
   .then(() => {
     return db.query(`
@@ -40,11 +40,11 @@ const seed = (data) => {
     return db.query(`
     CREATE TABLE comments (
       comment_id SERIAL PRIMARY KEY,
-      author VARCHAR NOT NULL REFERENCES users(username),
-      article_id INT NOT NULL REFERENCES articles(article_id),
+      author TEXT NOT NULL REFERENCES users(username),
+      article_id INT REFERENCES articles(article_id),
       votes INT DEFAULT 0,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      body VARCHAR NOT NULL
+      body TEXT
     );`)
   })
   .then(() => {
