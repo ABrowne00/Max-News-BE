@@ -94,4 +94,4 @@ const seed = (data) => {
   // 2. insert data
 };
 
-module.exports = { seed };
+module.exports =  seed 

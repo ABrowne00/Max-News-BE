@@ -1,6 +1,6 @@
 const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
-const { seed } = require('../db/seeds/seed.js');
+const  seed  = require('../db/seeds/seed.js');
 const app = require('../app')
 const request = require('supertest');
 const jestSorted = require('jest-sorted')
@@ -25,6 +25,14 @@ describe('api get users', () => {
                         name: expect.any(String)
                     })
                 })
+        })
+    })
+    test('URL spelled wrong', () => {
+        return request(app) 
+        .get('/api/user')
+        .expect(404)
+        .then((res) => {
+        expect(res.body.msg).toBe("Not Found")
         })
     })
 })
@@ -63,6 +71,14 @@ describe('api articles', () => {
                 })
            })
      })
+     test('URL misspelled gives 404 error', () => {
+         return request(app) 
+         .get('/api/articlea')
+         .expect(404)
+         .then((res) => {
+             expect(res.body.msg).toBe('Not Found')
+         })
+     })
      test('/api/aritcles responds with status 200 and sorted by date default', () => {
          return request(app)
          .get('/api/articles')
@@ -89,6 +105,14 @@ describe('api articles', () => {
              })
          })
      })
+     test.only('Return 400 and Bad Request if trying to get comments of invalid article', () => {
+         return request(app)
+         .get('/api/articles/notanid/comments')
+         .expect(400)
+         .then((res) => {
+             expect(res.body.msg).toBe('Bad Request')
+         })
+     })
 })
 
 describe('Update votes', () => {
@@ -99,6 +123,15 @@ describe('Update votes', () => {
         .expect(200)
         .then((res) => {
             expect(res.body.article.votes).toBe(105)
+        })
+    })
+    test('404 Not Found if not given a number', () => {
+        return request(app)
+        .patch('/api/aritcles/1')
+        .send( { inc_votes: 't'})
+        .expect(404)
+        .then((res) => {
+            expect(res.body.msg).toBe("Not Found")
         })
     })
 })
@@ -122,11 +155,29 @@ describe(' Get Article by id', () => {
                     })
                 })
            })
+    test("Invlaid id responds with 400 and Bad Request", () => {
+        return request(app)
+        .get('/api/articles/notanid')
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe("Bad Request")
+        })
+    })
+    test("Review Id that doesn't exist gives 404 Not Found", () => {
+        return request(app)
+        .get('/api/articles/9999')
+        .expect(404)
+        // .then((res) => {
+            
+        //     expect(res.body.msg).toBe("Not Found")
+        // })
+    })
+        
         })
 
 
-        //Not Working
-describe.only('Add comment', () => {
+       // Comments
+describe('Add comment', () => {
     test('Object with username and body adds comment based on comment id', () => {
         return request(app)
         .post('/api/articles/9/comments')
@@ -139,12 +190,20 @@ describe.only('Add comment', () => {
 
 
 
-// describe.only('delete comment', () => {
-//     test('delete comment', () => {
-//         return request(app)
-//         .delete('/api/comments/1')
-//         .expect(204)
-//     })
-// })
+describe('delete comment', () => {
+    test('delete comment', () => {
+        return request(app)
+        .delete('/api/comments/9')
+        .expect(204)
+    })
+})
     
+
+describe('GET comments', () => {
+    test('return comment object', () => {
+        return request(app)
+        .get('/api/comments')
+        .expect(200)
+    })
+})
 

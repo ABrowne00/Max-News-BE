@@ -16,21 +16,24 @@ if (!allowedSortBY.includes(sort_by)) {
 
 return db.query(`
 SELECT articles.*,
-COUNT(comment_id) AS comment_count FROM articles
- LEFT JOIN comments 
+COUNT(comment_id) AS comment_count 
+FROM articles
+LEFT JOIN comments 
 ON comments.article_id = articles.article_id
 GROUP BY articles.article_id
 ORDER BY ${sort_by} ${order};
 `)
 .then((result) => {
-    console.log(result.rows, '<<<model articles')
+    
     return result.rows;
     })
 }
 
 exports.fetchArticleById =  (article_id) => {
-    return db.query(`
-    SELECT articles.*, COUNT(comment_id) AS comment_count
+   return db.query(`
+    SELECT articles.*, 
+    COUNT(comment_id) AS comment_count
+    FROM articles
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id
     WHERE articles.article_id=$1
@@ -38,9 +41,14 @@ exports.fetchArticleById =  (article_id) => {
     [article_id]
     )
     .then((result) => {
-        console.log(result.rows)
+        if ( result.rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+    }
+    else {
         return result.rows[0]
-    })
+    }
+})
+    
 };
 
 exports.fecthComment = (article_id) => {
@@ -56,20 +64,18 @@ exports.fecthComment = (article_id) => {
 }
 
 exports.updateVotes = (body, article_id) => {
-    console.log('hello')
     return db.query(`UPDATE articles
      SET votes=votes+$1
     WHERE article_id=$2
      RETURNING *;`, [body.inc_votes, article_id])
     .then((res) => {
-        console.log(res.rows[0])
-        return res.rows[0]
+       return res.rows[0]
     })
 }
 
 exports.addComment = (addComment, article_id) => {
     const { username, body } =  addComment;
-    console.log(addComment)
+    
 
     return db.query(`
     INSERT INTO comments (author, body, article_id) 
@@ -78,7 +84,6 @@ exports.addComment = (addComment, article_id) => {
     `, [username, body, article_id]
     )
     .then((result) => {
-        console.log(result)
         return result.rows
     })
 }

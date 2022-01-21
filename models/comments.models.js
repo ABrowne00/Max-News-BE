@@ -7,6 +7,18 @@ exports.deleteComment = (comment_id) => {
     RETURNING *;
     `, [comment_id])
     .then((res) => {
-        return res.rows[0]
+        return res.rows
     })
+   
+}
+
+exports.fetchComments = () => {
+    return db.query(`
+    SELECT * 
+    FROM comments;
+    `)
+    .then((res) => {
+        res.rows[0]
+    })
+    
 }

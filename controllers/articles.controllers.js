@@ -12,36 +12,40 @@ exports.getArticles = (req, res , next ) => {
 
 exports.getArticleById = (req, res, next) => {
     const  { article_id }  = req.params;
+   
 fetchArticleById(article_id)
     .then((article) => {
         console.log(article)
          res.status(200).send({ article })
+        })
+.catch((err) => {
+        next(err);
     })
 }
 
-exports.getComment = (req, res) => {
+exports.getComment = (req, res, next) => {
     const { article_id } = req.params;
     fecthComment(article_id).then((comments) => {
-        console.log(comments)
-        res.status(200).send( { comments })
+       res.status(200).send( { comments })
+    })
+    .catch((err) => {
+        next(err)
     })
 }
 
 exports.getVotes = (req, res) => {
     const { article_id } = req.params;
-    console.log(article_id)
-    console.log(req.body)
+   
 
     updateVotes(req.body, article_id).then((article) => {
-       console.log(article)
+       
         res.status(200).send( { article })
     })
 }
 
 exports.postComment = (req, res, next) => {
     const {article_id} = req.params
-    console.log(req.body)
-    console.log(req.params)
+    
     
     addComment(req.body, article_id).then((comment) => {
         res.status(201).send( { comment })
