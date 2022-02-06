@@ -14,7 +14,7 @@ const { handle404, handlePsqlErrors } = require('./erros/index')
 
 
 //Endpoints
-endpointsRoute.route('/').get(getEndpoints);
+endpointsRoute.route('/api/').get(getEndpoints);
 
 
 
