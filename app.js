@@ -8,13 +8,13 @@ const app = express()
 
 app.use(express.json());
 
-const endpointsRoute = express.Router();
+// const endpointsRoute = express.Router();
 
 const { handle404, handlePsqlErrors } = require('./erros/index')
 
 
 //Endpoints
-endpointsRoute.route('/api/').get(getEndpoints);
+app.get('/api', getEndpoints);
 
 
 
