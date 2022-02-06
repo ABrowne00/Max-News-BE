@@ -3,11 +3,20 @@ const { getUsers } = require('./controllers/users.controllers')
 const {  getArticles, getArticleById, getComment, getVotes, postComment } = require('./controllers/articles.controllers')
 const { getTopics } = require('./controllers/topics.controllers')
 const { removeComment, getComments } = require('./controllers/comments.controllers')
+const getEndpoints  = require('./controllers/endpoints.controllers')
 const app = express()
 
 app.use(express.json());
 
+const endpointsRoute = express.Router();
+
 const { handle404, handlePsqlErrors } = require('./erros/index')
+
+
+//Endpoints
+endpointsRoute.route('/').get(getEndpoints);
+
+
 
 //topics
 app.get('/api/topics', getTopics)

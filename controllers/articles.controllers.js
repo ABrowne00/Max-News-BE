@@ -1,13 +1,26 @@
 const { fetchArticles, fetchArticleById, fecthComment, updateVotes, addComment } = require('../models/articles.models')
 
-exports.getArticles = (req, res , next ) => {
-    const { sort_by, order } = req.query;
-
-    fetchArticles(sort_by, order)
-    .then((articles) => {
-        res.status(200).send( { articles });
-    })
-    .catch(next)
+exports.getArticles = (req, res, next) => {
+    fetchArticles(req.query)
+        .then((articles) => {
+            if (articles.length > 0) {
+                res.status(200).send({ articles });
+            } else {
+                if (req.query.topic) {
+                    return checkIfExists('topics', 'slug', req.query.topic)
+                        .then((topicExist) => {
+                            if (topicExist) {
+                                res.status(200).send({ msg: "Topic Not Found In Articles", articles: articles });
+                            } else {
+                                return Promise.reject({ status: 404, msg: "Not Found In DB" })
+                            }
+                        })
+                } else {
+                    return Promise.reject({ status: 404, msg: "Not Found" })
+                }
+            }
+        })
+        .catch(next);
 }
 
 exports.getArticleById = (req, res, next) => {
@@ -15,7 +28,7 @@ exports.getArticleById = (req, res, next) => {
    
 fetchArticleById(article_id)
     .then((article) => {
-        console.log(article)
+       
          res.status(200).send({ article })
         })
 .catch((err) => {
@@ -51,3 +64,6 @@ exports.postComment = (req, res, next) => {
         res.status(201).send( { comment })
     })
 }
+
+
+
