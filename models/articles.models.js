@@ -3,7 +3,7 @@ const db = require('../db/connection')
 exports.fetchArticles = async (reqQuery) => {
     const { sort_by = 'created_at', order_by = 'DESC',  topic } = reqQuery;
 
-    const allowedSortBys = ['article_id', 'title', 'votes', 'created_at', 'topic', 'author']
+    const allowedSortBys = ['article_id', 'title', 'votes', 'created_at', 'topic', 'author', ]
     const allowedOrderBys = ['DESC', 'ASC', 'asc', 'desc']
 
     if (!allowedSortBys.includes(sort_by)) {
