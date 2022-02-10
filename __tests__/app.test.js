@@ -186,7 +186,7 @@ describe('Add comment', () => {
     test('Object with username and body adds comment based on comment id', () => {
         return request(app)
         .post('/api/articles/9/comments')
-        .send({username: "butter_bridge", body: "comment comment"})
+        .send({username:"butter_bridge", body: "comment comment"})
         .expect(201)
     })
 })
