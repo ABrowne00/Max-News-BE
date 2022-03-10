@@ -12,7 +12,7 @@ A hosted version of this can be found at https://maximum-news.herokuapp.com/
 
 If you would like to work on this repository locally, you will ned to clone it to your local machine
 
-git clone 
+    git clone https://github.com/ABrowne00/Max-News-BE.git
 
   
 
