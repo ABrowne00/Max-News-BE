@@ -1,4 +1,4 @@
-# Maximum-News
+# Max-News
 
 
 
