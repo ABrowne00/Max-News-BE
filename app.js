@@ -13,7 +13,7 @@ app.use(express.json());
 
 
 
-const { handle404, handlePsqlErrors } = require('./erros/index')
+const { handle404, handlePsqlErrors } = require('./errors/index')
 
 
 //Endpoints

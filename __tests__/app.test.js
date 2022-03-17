@@ -77,7 +77,7 @@ describe('api articles', () => {
      })
      test('api/airticles?order=asc returns articles assorted by asc order', async () => {
          const res = await request(app)
-             .get('/api/articles?order=asc')
+             .get('/api/articles?order_by=asc')
              .expect(200);
          expect(res.body.articles).toBeSorted('created_at');
      })
@@ -89,6 +89,16 @@ describe('api articles', () => {
             expect(res.body.articles).toBeSortedBy('author', {descending: true})
          })
      })
+     test('Status 400: invalid sort_by query', () => {
+         return request(app)
+         .get('/api/articles?sort_by=bananas')
+         .expect(400)
+     })
+     test.only('Status 400: invalid order_by query', () => {
+         return request(app)
+         .get('/api/articles?order_by=bananas')
+         .expect(400)
+     })
      test('filter by topic', () => {
          return request(app) 
          .get('/api/articles?topic=mitch')
@@ -99,9 +109,23 @@ describe('api articles', () => {
              })
          })
      })
-     test.skip('400: returns bad request message with invalid sort query', () => {
+     test('error if topic does not exist ', () => {
          return request(app)
-         .get('/api/articles?order=low')
+         .get('/api/articles?topic=banana')
+         .expect(404)
+         
+     })
+     test('Status 200: Returns 200 and empty array if valid topic with no articles', () => {
+         return request(app)
+         .get('/api/articles?topic=paper')
+         .expect(200)
+         .then((res) => {
+             expect(res.body.msg).toBe('Articles For Topic Not Found')
+         })
+     })
+     test('400: returns bad request message with invalid sort query', () => {
+         return request(app)
+         .get('/api/articles?order_by=low')
          .expect(400)
         })
      test('Comment request responds with comment array', async () => {
@@ -168,14 +192,11 @@ describe(' Get Article by id', () => {
             .expect(400);
         expect(res.body.msg).toBe("Bad Request");
     })
-    test("Review Id that doesn't exist gives 404 Not Found", () => {
+    test("Article Id that doesn't exist gives 404 Not Found", () => {
         return request(app)
-        .get('/api/articles/9999')
+        .get('/api/articles/15000')
         .expect(404)
-        // .then((res) => {
-            
-        //     expect(res.body.msg).toBe("Not Found")
-        // })
+    
     })
         
         })
@@ -183,11 +204,38 @@ describe(' Get Article by id', () => {
 
        // Comments
 describe('Add comment', () => {
-    test('Object with username and body adds comment based on comment id', () => {
+    test('Staus 201: Object with username and body adds comment based on comment id', () => {
         return request(app)
         .post('/api/articles/9/comments')
         .send({username:"butter_bridge", body: "comment comment"})
         .expect(201)
+    })
+    test('Status 201: Additional info ignored and comment posted anyway', () => {
+        return request(app)
+        .post('/api/articles/9/comments')
+        .send({username:"butter_bridge", body: 'comment comment', test: 'test'})
+        .expect(201)
+    })
+    test('Status 404: Try to post comment of invalid Aritcle ID', () => {
+        return request(app)
+        .post('/api/articles/999/comments')
+        .send({username: 'butter_bridge', body: 'comment comment'})
+        .expect(404)
+    })
+    test('Status 400: Required field missing. PSQL Error', () => {
+        return request(app)
+        .post('/api/articles/9/comments')
+        .send({username: 'butter_bridge'})
+        .expect(400)
+    })
+    test.only('Status 404: Username that does not exist in the database. PSQL Error', () => {
+        return request(app)
+        .post('/api/articles/9/comments')
+        .send({username: 'kevin', body:'comment comment'})
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Bad Request')
+        })
     })
 })
 
@@ -195,10 +243,15 @@ describe('Add comment', () => {
 
 
 describe('delete comment', () => {
-    test('delete comment', () => {
+    test.only('Status 204: delete comment', () => {
         return request(app)
-        .delete('/api/comments/9')
+        .delete('/api/comments/1')
         .expect(204)
+    })
+    test.only('Status 404: invalid comment id' ,  () => {
+        return request(app)
+        .delete('/api/comments/999')
+        .expect(404)
     })
 })
     
